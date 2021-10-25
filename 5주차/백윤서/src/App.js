@@ -1,32 +1,33 @@
-import React from "react";
-import { Link, Route } from "react-router-dom";
-import Home from "./Home";
-import About from "./About";
-import Profile from "./Profile";
+import React, { useState } from "react";
+import axios from "axios";
 
-function App() {
+const App = () => {
+  const [data, setData] = useState(null);
+  const onClick = async () => {
+    try {
+      const response = await axios.get(
+        "https://newsapi.org/v2/top-headlines?country=kr&apiKey=3949b624949f4dcb85e223d42cec8177"
+      );
+      setData(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <div>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/about">About</Link>
-        </li>
-        <li>
-          <Link to="/profile/bgyoons">bgyoons Profile</Link>
-        </li>
-        <li>
-          <Link to="/profile/ran">ran Profile</Link>
-        </li>
-      </ul>
-      <hr />
-      <Route path="/" component={Home} exact={true} />
-      <Route path={["/about", "/info"]} component={About} />
-      <Route path="/profile/:username" component={Profile} exact={true} />
+      <div>
+        <button onClick={onClick}>불러오기</button>
+      </div>
+      {data && (
+        <textarea
+          rows={7}
+          value={JSON.stringify(data, null, 2)}
+          readOnly={true}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default App;
